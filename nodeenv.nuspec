@@ -3,13 +3,13 @@
   <metadata>
     <id>NodeEnv</id>
     <title>Node.js Environment Integration</title>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Chris Nienhuis</authors>
     <owners>Advisory Board Company</owners>
     <iconUrl>http://nodejs-cloud.com/img/128px/nodejs.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Dependency free Node.js for .NET projects.</description>
-    <releaseNotes>1.0.0 is initial public release.</releaseNotes>
+    <releaseNotes>1.0.1 gets rid of annoying characters in the node.cmd file.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Node Node.js Grunt Grunt.js NPM Integration</tags>
   </metadata>
