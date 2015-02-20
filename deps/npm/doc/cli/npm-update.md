@@ -10,10 +10,15 @@ npm-update(1) -- Update a package
 This command will update all the packages listed to the latest version
 (specified by the `tag` config).
 
-It will also install missing packages.
+It will also install missing packages. As with all commands that install
+packages, the `--dev` flag will cause `devDependencies` to be processed
+as well.
 
-If the `-g` flag is specified, this command will update globally installed packages.
-If no package name is specified, all packages in the specified location (global or local) will be updated.
+If the `-g` flag is specified, this command will update globally installed
+packages.
+
+If no package name is specified, all packages in the specified location (global
+or local) will be updated.
 
 ## SEE ALSO
 

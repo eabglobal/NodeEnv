@@ -3,7 +3,7 @@ npm-scripts(7) -- How npm handles the "scripts" field
 
 ## DESCRIPTION
 
-npm supports the "scripts" member of the package.json script, for the
+npm supports the "scripts" property of the package.json script, for the
 following scripts:
 
 * prepublish:
@@ -19,10 +19,6 @@ following scripts:
   Run BEFORE the package is uninstalled.
 * postuninstall:
   Run AFTER the package is uninstalled.
-* preupdate:
-  Run BEFORE the package is updated with the update command.
-* update, postupdate:
-  Run AFTER the package is updated with the update command.
 * pretest, test, posttest:
   Run by the `npm test` command.
 * prestop, stop, poststop:
@@ -33,8 +29,10 @@ following scripts:
   Run by the `npm restart` command. Note: `npm restart` will run the
   stop and start scripts if no `restart` script is provided.
 
-Additionally, arbitrary scripts can be run by doing
-`npm run-script <stage> <pkg>`.
+Additionally, arbitrary scripts can be executed by running `npm
+run-script <pkg> <stage>`. *Pre* and *post* commands with matching
+names will be run for those as well (e.g. `premyscript`, `myscript`,
+`postmyscript`).
 
 ## NOTE: INSTALL SCRIPTS ARE AN ANTIPATTERN
 
@@ -135,7 +133,7 @@ Configuration parameters are put in the environment with the
 `npm_config_` prefix. For instance, you can view the effective `root`
 config by checking the `npm_config_root` environment variable.
 
-### Special: package.json "config" hash
+### Special: package.json "config" object
 
 The package.json "config" keys are overwritten in the environment if
 there is a config param of `<name>[@<version>]:<key>`.  For example,

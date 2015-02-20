@@ -24,8 +24,9 @@ same.
 
 ### npmrc Files
 
-The three relevant files are:
+The four relevant files are:
 
+* per-project config file (/path/to/my/project/.npmrc)
 * per-user config file (~/.npmrc)
 * global config file ($PREFIX/npmrc)
 * npm builtin config file (/path/to/npm/npmrc)
@@ -49,11 +50,11 @@ The following shorthands are parsed on the command-line:
 * `-dd`, `--verbose`: `--loglevel verbose`
 * `-ddd`: `--loglevel silly`
 * `-g`: `--global`
+* `-C`: `--prefix`
 * `-l`: `--long`
 * `-m`: `--message`
 * `-p`, `--porcelain`: `--parseable`
 * `-reg`: `--registry`
-* `-v`: `--version`
 * `-f`: `--force`
 * `-desc`: `--description`
 * `-S`: `--save`
@@ -105,6 +106,16 @@ See package.json(5) for more information.
 
 ## Config Settings
 
+### access
+
+* Default: `restricted`
+* Type: Access
+
+When publishing scoped packages, the access level defaults to `restricted`.  If
+you want your scoped package to be publicly viewable (and installable) set
+`--access=public`. The only valid values for `access` are `public` and
+`restricted`. Unscoped packages _always_ have an access level of `public`.
+
 ### always-auth
 
 * Default: false
@@ -135,15 +146,32 @@ The browser that is called by the `npm docs` command to open websites.
 ### ca
 
 * Default: The npm CA certificate
-* Type: String or null
+* Type: String, Array or null
 
 The Certificate Authority signing certificate that is trusted for SSL
-connections to the registry.
+connections to the registry. Values should be in PEM format with newlines
+replaced by the string "\n". For example:
+
+    ca="-----BEGIN CERTIFICATE-----\nXXXX\nXXXX\n-----END CERTIFICATE-----"
 
 Set to `null` to only allow "known" registrars, or to a specific CA cert
 to trust only that specific signing authority.
 
+Multiple CAs can be trusted by specifying an array of certificates:
+
+    ca[]="..."
+    ca[]="..."
+
 See also the `strict-ssl` config.
+
+### cafile
+
+* Default: `null`
+* Type: path
+
+A path to a file containing one or multiple Certificate Authority signing
+certificates. Similar to the `ca` setting, but allows for multiple CA's, as
+well as for the CA information to be stored in a file on disk.
 
 ### cache
 
@@ -242,12 +270,6 @@ set.
 * Type: path
 
 The command to run for `npm edit` or `npm config edit`.
-
-### email
-
-The email of the logged-in user.
-
-Set by the `npm adduser` command.  Should not be set explicitly.
 
 ### engine-strict
 
@@ -356,11 +378,12 @@ The string that starts all the debugging log output.
 
 ### https-proxy
 
-* Default: the `HTTPS_PROXY` or `https_proxy` or `HTTP_PROXY` or
-  `http_proxy` environment variables.
+* Default: null
 * Type: url
 
-A proxy to use for outgoing https requests.
+A proxy to use for outgoing https requests. If the `HTTPS_PROXY` or
+`https_proxy` or `HTTP_PROXY` or `http_proxy` environment variables are set,
+proxy settings will be honored by the underlying `request` library.
 
 ### ignore-scripts
 
@@ -379,33 +402,41 @@ documentation for the
 [init-package-json](https://github.com/isaacs/init-package-json) module
 for more information, or npm-init(1).
 
-### init.author.name
+### init-author-name
 
 * Default: ""
 * Type: String
 
 The value `npm init` should use by default for the package author's name.
 
-### init.author.email
+### init-author-email
 
 * Default: ""
 * Type: String
 
 The value `npm init` should use by default for the package author's email.
 
-### init.author.url
+### init-author-url
 
 * Default: ""
 * Type: String
 
 The value `npm init` should use by default for the package author's homepage.
 
-### init.license
+### init-license
 
 * Default: "ISC"
 * Type: String
 
 The value `npm init` should use by default for the package license.
+
+### init-version
+
+* Default: "1.0.0"
+* Type: semver
+
+The value that `npm init` should use by default for the package
+version number, if not already set in package.json.
 
 ### json
 
@@ -451,15 +482,15 @@ to the npm registry.  Must be IPv4 in versions of Node prior to 0.12.
 
 ### loglevel
 
-* Default: "http"
+* Default: "warn"
 * Type: String
-* Values: "silent", "win", "error", "warn", "http", "info", "verbose", "silly"
+* Values: "silent", "error", "warn", "http", "info", "verbose", "silly"
 
 What level of logs to report.  On failure, *all* logs are written to
 `npm-debug.log` in the current working directory.
 
 Any logs of a higher level than the setting are shown.
-The default is "http", which shows http, warn, and error output.
+The default is "warn", which shows warn and error output.
 
 ### logstream
 
@@ -497,7 +528,7 @@ Any "%s" in the message will be replaced with the version number.
 * Default: process.version
 * Type: semver or false
 
-The node version to use when checking package's "engines" hash.
+The node version to use when checking a package's `engines` map.
 
 ### npat
 
@@ -519,7 +550,7 @@ usage.
 * Default: true
 * Type: Boolean
 
-Attempt to install packages in the `optionalDependencies` hash.  Note
+Attempt to install packages in the `optionalDependencies` object.  Note
 that if these packages fail to install, the overall installation
 process is not aborted.
 
@@ -564,10 +595,12 @@ this as true.
 
 ### proxy
 
-* Default: `HTTP_PROXY` or `http_proxy` environment variable, or null
+* Default: null
 * Type: url
 
-A proxy to use for outgoing http requests.
+A proxy to use for outgoing http requests. If the `HTTP_PROXY` or
+`http_proxy` environment variables are set, proxy settings will be
+honored by the underlying `request` library.
 
 ### rebuild-bundle
 
@@ -597,8 +630,8 @@ Remove failed installs.
 
 Save installed packages to a package.json file as dependencies.
 
-When used with the `npm rm` command, it removes it from the dependencies
-hash.
+When used with the `npm rm` command, it removes it from the `dependencies`
+object.
 
 Only works if there is already a package.json file present.
 
@@ -619,10 +652,10 @@ bundledDependencies list.
 * Default: false
 * Type: Boolean
 
-Save installed packages to a package.json file as devDependencies.
+Save installed packages to a package.json file as `devDependencies`.
 
 When used with the `npm rm` command, it removes it from the
-devDependencies hash.
+`devDependencies` object.
 
 Only works if there is already a package.json file present.
 
@@ -644,7 +677,7 @@ Save installed packages to a package.json file as
 optionalDependencies.
 
 When used with the `npm rm` command, it removes it from the
-devDependencies hash.
+`devDependencies` object.
 
 Only works if there is already a package.json file present.
 
@@ -653,13 +686,24 @@ Only works if there is already a package.json file present.
 * Default: '^'
 * Type: String
 
-Configure how versions of packages installed to a package.json file via 
+Configure how versions of packages installed to a package.json file via
 `--save` or `--save-dev` get prefixed.
 
-For example if a package has version `1.2.3`, by default it's version is
-set to `^1.2.3` which allows minor upgrades for that package, but after  
+For example if a package has version `1.2.3`, by default its version is
+set to `^1.2.3` which allows minor upgrades for that package, but after
 `npm config set save-prefix='~'` it would be set to `~1.2.3` which only allows
 patch upgrades.
+
+### scope
+
+* Default: ""
+* Type: String
+
+Associate an operation with a scope for a scoped registry. Useful when logging
+in to a private registry for the first time:
+`npm login --scope=@organization --registry=registry.organization.com`, which
+will cause `@organization` to be mapped to the registry for future installation
+of packages specified according to the pattern `@organization/package`.
 
 ### searchopts
 
@@ -711,6 +755,17 @@ using `-s` to add a signature.
 
 Note that git requires you to have set up GPG keys in your git configs
 for this to work properly.
+
+### spin
+
+* Default: true
+* Type: Boolean or `"always"`
+
+When set to `true`, npm will display an ascii spinner while it is doing
+things, if `process.stderr` is a TTY.
+
+Set to `false` to suppress the spinner, or set to `always` to output
+the spinner even for non-TTY outputs.
 
 ### strict-ssl
 
@@ -773,13 +828,6 @@ instead of complete help when doing `npm-help(1)`.
 
 The UID to set to when running package scripts as root.
 
-### username
-
-* Default: null
-* Type: String
-
-The username on the npm registry.  Set with `npm adduser`
-
 ### userconfig
 
 * Default: ~/.npmrc
@@ -790,7 +838,7 @@ The location of user-level configuration settings.
 ### umask
 
 * Default: 022
-* Type: Octal numeric string
+* Type: Octal numeric string in range 0000..0777 (0..511)
 
 The "umask" value to use when setting the file creation mode on files
 and folders.
@@ -820,8 +868,8 @@ Only relevant when specified explicitly on the command line.
 * Default: false
 * Type: boolean
 
-If true, output the npm version as well as node's `process.versions`
-hash, and exit successfully.
+If true, output the npm version as well as node's `process.versions` map, and
+exit successfully.
 
 Only relevant when specified explicitly on the command line.
 
@@ -837,7 +885,6 @@ Set to `"browser"` to view html help content in the default web browser.
 ## SEE ALSO
 
 * npm-config(1)
-* npm-config(7)
 * npmrc(5)
 * npm-scripts(7)
 * npm-folders(5)
