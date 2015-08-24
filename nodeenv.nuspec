@@ -3,13 +3,13 @@
   <metadata>
     <id>NodeEnv</id>
     <title>Node.js Environment Integration</title>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <authors>Chris Nienhuis</authors>
     <owners>Advisory Board Company</owners>
     <iconUrl>http://nodejs-cloud.com/img/128px/nodejs.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Dependency free Node.js for .NET projects.</description>
-    <releaseNotes>1.0.3 includes node 0.12.0.0 and updated version of npm.</releaseNotes>
+    <releaseNotes>1.0.4 includes node 0.12.7.0 and updated version of npm.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Node Node.js Grunt Grunt.js NPM Integration</tags>
   </metadata>
