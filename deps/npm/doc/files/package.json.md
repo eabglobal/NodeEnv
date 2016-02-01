@@ -21,7 +21,7 @@ The name is what your thing is called.
 
 Some rules:
 
-* The name must be shorter than 214 characters. This includes the scope for
+* The name must be less than or equal to 214 characters. This includes the scope for
   scoped packages.
 * The name can't start with a dot or an underscore.
 * New packages must not have uppercase letters in the name.
@@ -105,19 +105,19 @@ current SPDX license identifier for the license you're using, like this:
 
 You can check [the full list of SPDX license IDs](https://spdx.org/licenses/).
 Ideally you should pick one that is
-[OSI](http://opensource.org/licenses/alphabetical) approved.
+[OSI](https://opensource.org/licenses/alphabetical) approved.
 
 If your package is licensed under multiple common licenses, use an [SPDX license
-expression syntax version 2.0 string](http://npmjs.com/package/spdx), like this:
+expression syntax version 2.0 string](https://npmjs.com/package/spdx), like this:
 
     { "license" : "(ISC OR GPL-3.0)" }
 
 If you are using a license that hasn't been assigned an SPDX identifier, or if
 you are using a custom license, use the following valid SPDX expression:
 
-    { "license" : "LicenseRef-LICENSE" }
+    { "license" : "SEE LICENSE IN <filename>" }
 
-Then include a LICENSE file at the top level of the package.
+Then include a file named `<filename>` at the top level of the package.
 
 Some old packages used license objects or a "licenses" property containing an
 array of license objects:
@@ -147,6 +147,13 @@ Those styles are now deprecated. Instead, use SPDX expressions, like this:
 
     { "license": "(MIT OR Apache-2.0)" }
 
+Finally, if you do not wish to grant others the right to use a private or
+unpublished package under any terms:
+
+    { "license": "UNLICENSED"}
+
+Consider also setting `"private": true` to prevent accidental publication.
+
 ## people fields: author, contributors
 
 The "author" is one person.  "contributors" is an array of people.  A "person"
@@ -171,10 +178,30 @@ The "files" field is an array of files to include in your project.  If
 you name a folder in the array, then it will also include the files
 inside that folder. (Unless they would be ignored by another rule.)
 
-You can also provide a ".npmignore" file in the root of your package,
-which will keep files from being included, even if they would be picked
-up by the files array.  The ".npmignore" file works just like a
-".gitignore".
+You can also provide a ".npmignore" file in the root of your package or
+in subdirectories, which will keep files from being included, even
+if they would be picked up by the files array.  The `.npmignore` file
+works just like a `.gitignore`.
+
+Certain files are always included, regardless of settings:
+
+* `package.json`
+* `README` (and its variants)
+* `CHANGELOG` (and its variants)
+* `LICENSE` / `LICENCE`
+
+Conversely, some files are always ignored:
+
+* `.git`
+* `CVS`
+* `.svn`
+* `.hg`
+* `.lock-wscript`
+* `.wafpickle-N`
+* `*.swp`
+* `.DS_Store`
+* `._*`
+* `npm-debug.log`
 
 ## main
 
@@ -276,10 +303,13 @@ with the lib folder in any way, but it's useful meta info.
 
 ### directories.bin
 
-If you specify a `bin` directory, then all the files in that folder will
-be added as children of the `bin` path.
+If you specify a `bin` directory in `directories.bin`, all the files in
+that folder will be added.
 
-If you have a `bin` path already, then this has no effect.
+Because of the way the `bin` directive works, specifying both a
+`bin` path and setting `directories.bin` is an error. If you want to
+specify individual files, use `bin`, and for all the files in an
+existing `bin` directory, use `directories.bin`.
 
 ### directories.man
 
@@ -380,7 +410,7 @@ See semver(7) for more details about specifying version ranges.
 * `git...` See 'Git URLs as Dependencies' below
 * `user/repo` See 'GitHub URLs' below
 * `tag` A specific version tagged and published as `tag`  See `npm-tag(1)`
-* `path/path/path` See Local Paths below
+* `path/path/path` See [Local Paths](#local-paths) below
 
 For example, these are all valid:
 
@@ -438,8 +468,8 @@ included.  For example:
 ## Local Paths
 
 As of version 2.0.0 you can provide a path to a local directory that contains a
-package. Local paths can be saved using `npm install --save`, using any of
-these forms:
+package. Local paths can be saved using `npm install -S` or
+`npm install --save`, using any of these forms:
 
     ../foo/bar
     ~/foo/bar
@@ -541,7 +571,7 @@ this. If you depend on features introduced in 1.5.2, use `">= 1.5.2 < 2"`.
 
 Array of package names that will be bundled when publishing the package.
 
-If this is spelled `"bundleDependencies"`, then that is also honorable.
+If this is spelled `"bundleDependencies"`, then that is also honored.
 
 ## optionalDependencies
 
@@ -596,17 +626,10 @@ field is advisory only.
 
 ## engineStrict
 
-**NOTE: This feature is deprecated and will be removed in npm 3.0.0.**
+**This feature was deprecated with npm 3.0.0**
 
-If you are sure that your module will *definitely not* run properly on
-versions of Node/npm other than those specified in the `engines` object,
-then you can set `"engineStrict": true` in your package.json file.
-This will override the user's `engine-strict` config setting.
-
-Please do not do this unless you are really very very sure.  If your
-engines object is something overly restrictive, you can quite easily and
-inadvertently lock yourself into obscurity and prevent your users from
-updating to new versions of Node.  Consider this choice carefully.
+Prior to npm 3.0.0, this feature was used to treat this package as if the
+user had set `engine-strict`.
 
 ## os
 
@@ -660,13 +683,13 @@ param at publish-time.
 
 ## publishConfig
 
-This is a set of config values that will be used at publish-time.  It's
-especially handy if you want to set the tag or registry, so that you can
-ensure that a given package is not tagged with "latest" or published to
-the global public registry by default.
+This is a set of config values that will be used at publish-time. It's
+especially handy if you want to set the tag, registry or access, so that
+you can ensure that a given package is not tagged with "latest", published
+to the global public registry or that a scoped module is private by default.
 
-Any config values can be overridden, but of course only "tag" and
-"registry" probably matter for the purposes of publishing.
+Any config values can be overridden, but of course only "tag", "registry" and
+"access" probably matter for the purposes of publishing.
 
 See `npm-config(7)` to see the list of config options that can be
 overridden.
@@ -703,4 +726,4 @@ npm will default some values based on package contents.
 * npm-faq(7)
 * npm-install(1)
 * npm-publish(1)
-* npm-rm(1)
+* npm-uninstall(1)

@@ -1,0 +1,15 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "Node environment for .Net project",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "0.4.4",
+    "grunt-cli": "0.1.13"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Your Team",
+  "license": "BSD-2-Clause"
+}
