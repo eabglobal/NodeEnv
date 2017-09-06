@@ -26,10 +26,12 @@ same.
 
 The four relevant files are:
 
-* per-project config file (/path/to/my/project/.npmrc)
-* per-user config file (~/.npmrc)
-* global config file ($PREFIX/etc/npmrc)
-* npm builtin config file (/path/to/npm/npmrc)
+* per-project configuration file (`/path/to/my/project/.npmrc`)
+* per-user configuration file (defaults to `$HOME/.npmrc`; configurable via CLI
+  option `--userconfig` or environment variable `$NPM_CONF_USERCONFIG`)
+* global configuration file (defaults to `$PREFIX/etc/npmrc`; configurable via
+  CLI option `--globalconfig` or environment variable `$NPM_CONF_GLOBALCONFIG`)
+* npm's built-in configuration file (`/path/to/npm/npmrc`)
 
 See npmrc(5) for more details.
 
@@ -236,7 +238,12 @@ explicitly used, and that only GET requests use the cache.
 * Default: `null`
 * Type: String
 
-A client certificate to pass when accessing the registry.
+A client certificate to pass when accessing the registry.  Values should be in
+PEM format with newlines replaced by the string "\n". For example:
+
+    cert="-----BEGIN CERTIFICATE-----\nXXXX\nXXXX\n-----END CERTIFICATE-----"
+
+It is _not_ the path to a certificate file (and there is no "certfile" option).
 
 ### color
 
@@ -394,7 +401,7 @@ Causes npm to install the package into your local `node_modules` folder with
 the same layout it uses with the global `node_modules` folder.  Only your
 direct dependencies will show in `node_modules` and everything they depend
 on will be flattened in their `node_modules` folders.  This obviously will
-elminate some deduping. If used with `legacy-bundling`, `legacy-bundling` will be
+eliminate some deduping. If used with `legacy-bundling`, `legacy-bundling` will be
 preferred.
 
 ### group
@@ -501,7 +508,12 @@ change.  Only the output from `npm ls --json` is currently valid.
 * Default: `null`
 * Type: String
 
-A client key to pass when accessing the registry.
+A client key to pass when accessing the registry.  Values should be in PEM
+format with newlines replaced by the string "\n". For example:
+
+    key="-----BEGIN PRIVATE KEY-----\nXXXX\nXXXX\n-----END PRIVATE KEY-----"
+
+It is _not_ the path to a key file (and there is no "keyfile" option).
 
 ### legacy-bundling
 
@@ -570,6 +582,14 @@ colored output if it is a TTY.
 * Type: Boolean
 
 Show extended information in `npm ls` and `npm search`.
+
+### maxsockets
+
+* Default: 50
+* Type: Number
+
+The maximum number of connections to use per origin (protocol/host/port
+combination). Passed to the `http` `Agent` used to make the request.
 
 ### message
 
@@ -658,7 +678,7 @@ Set to true to run in "production" mode.
 
 ### progress
 
-* Default: true
+* Default: true, unless TRAVIS or CI env vars set.
 * Type: Boolean
 
 When set to `true`, npm will display a progress bar during time intensive
