@@ -3,13 +3,13 @@
   <metadata>
     <id>NodeEnv</id>
     <title>Node.js Environment Integration</title>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <authors>Chris Nienhuis</authors>
     <owners>Advisory Board Company</owners>
     <iconUrl>http://nodejs-cloud.com/img/128px/nodejs.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Dependency free Node.js for .NET projects.</description>
-    <releaseNotes>1.0.7 includes node v8.11.1 and npm v5.6.0.</releaseNotes>
+    <releaseNotes>1.0.8 includes node v8.11.1 and npm v5.6.0.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Node Node.js NPM Integration</tags>
   </metadata>
