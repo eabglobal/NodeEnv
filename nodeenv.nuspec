@@ -15,9 +15,7 @@
   </metadata>
   <files>
     <file src="deps\**" />
-    <file src="node.targets" target="content\.node\" />
     <file src="node.cmd" target="content\.node\" />
     <file src="npm.cmd" target="content\.node\" />
-    <file src="package.json" target="content\.node\" />
   </files>
 </package> 
