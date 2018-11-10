@@ -15,8 +15,6 @@
   </metadata>
   <files>
     <file src="deps\**" />
-    <file src="node.cmd" target="content\.node\" />
-    <file src="npm.cmd" target="content\.node\" />
     <file src="UseNodeEnv.ps1" target="content\.node\" />
   </files>
 </package> 
