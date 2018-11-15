@@ -3,21 +3,18 @@
   <metadata>
     <id>NodeEnv</id>
     <title>Node.js Environment Integration</title>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <authors>Chris Nienhuis</authors>
     <owners>Advisory Board Company</owners>
     <iconUrl>http://nodejs-cloud.com/img/128px/nodejs.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Dependency free Node.js for .NET projects.</description>
-    <releaseNotes>1.1.0 includes node v10.8.0 and npm v6.2.0.</releaseNotes>
+    <releaseNotes>1.2.0 includes node v10.13.0 and npm v6.4.1 and UseNodeEnv script for adding node, npm and npx to the path.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Node Node.js NPM Integration</tags>
   </metadata>
   <files>
     <file src="deps\**" />
-    <file src="node.targets" target="content\.node\" />
-    <file src="node.cmd" target="content\.node\" />
-    <file src="npm.cmd" target="content\.node\" />
-    <file src="package.json" target="content\.node\" />
+    <file src="UseNodeEnv.ps1" target="content\.node\" />
   </files>
 </package> 
